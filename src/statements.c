@@ -18,9 +18,10 @@ static symset_t afterthen_set, stat_set, rtn_set;
 void statInitialize(void)
 {
     // C99 style literal
+    //集合の作成
     stat_set = symsetCreate((token_t[]){
         tok_id, sym_call, sym_if, sym_while, sym_for, sym_print,
-        sym_println, sym_input, tok_EOD });
+        sym_println, sym_input,sym_loop ,tok_EOD });//追加部
     end_set = symsetCreate((token_t[]){ sym_end, tok_EOD });
     rtn_set = symsetCreate((token_t[]){ sym_break, sym_return, tok_EOD });
     afterthen_set = symsetCreate((token_t[]){ sym_else, sym_elsif, tok_EOD });
@@ -30,6 +31,7 @@ void statInitialize(void)
 #define MAX_IF_SEQ      64
 
 // if文："if"を読んでから呼び出される
+//おそらく分析
 static stnode *ifStatement(void)
 {
     struct ifclause buffer[MAX_IF_SEQ];
@@ -65,6 +67,17 @@ static stnode *whileStatement(void)
     item s = getItem();
     if (s.token != sym_do)
         abortMessageWithToken("no do", &s);
+    currentBreakNest++;
+    whp->body = codeblock(end_set, false);
+    (void)getItem();
+    currentBreakNest--;
+    return stp;
+}
+
+static stnode *loopStatement(void)//追加部
+{
+    stnode *stp = newNode(node_loop);
+    loopnode *whp = (loopnode *)stp;
     currentBreakNest++;
     whp->body = codeblock(end_set, false);
     (void)getItem();
@@ -133,6 +146,8 @@ stnode *fetchStatement(item ahead)
             return whileStatement();
         case sym_for:
             return forStatement();
+        case sym_loop:
+            return loopStatement();
         default:
             break; // error
     }

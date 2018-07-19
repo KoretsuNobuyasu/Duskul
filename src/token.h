@@ -4,7 +4,7 @@
 
 #include "commontype.h"
 
-enum token {
+enum token {//追加部
     tok_id, tok_num, tok_str,
     sym_xxx, // characters not used ( '!', '^', '`', '~' )
     /* ---- characters ---- */
@@ -23,7 +23,7 @@ enum token {
     sym_break, sym_call, sym_decl, sym_do, sym_else, sym_elsif,
     sym_end, sym_for, sym_func, sym_if, sym_input, sym_not,
     sym_or, sym_print, sym_println, sym_proc, sym_return,
-    sym_step, sym_then, sym_to, sym_var, sym_while,
+    sym_step, sym_then, sym_to, sym_var, sym_loop, sym_while,
     all_normal_symbols,
     /* ---- Special Tokens ---- */
     tok_ILL = all_normal_symbols,

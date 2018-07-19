@@ -1,4 +1,4 @@
-/* Duskul version 0.1.4,  2018.06.08,   Takeshi Ogihara, (C) 2018 */
+/* Duskul version 0.1.1,  2018.03.13,   Takeshi Ogihara, (C) 2018 */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,16 +28,16 @@ static ex_condition execStatements(const stnode *stptr);
 static void execAssign(const assignnode *asp)
 {
     int idx = asp->offset;
-    long *target = asp->global ? &globals[idx] : &stack[localbase - idx];
+    long *target = asp->global ? &globals[idx] : &stack[localbase - idx];//(グローバルかグローバルで内科によって)グローバル用のテーブルがある。場所のアドレスをとってきている。
     evaluate(asp->expr);
     *target = stack[sp++];
 }
 
 static void execReturn(const assignnode *asp)
 {
-    if (asp->global) {
+    if (asp->global){
         evaluate(asp->expr);
-        rtnvalue = stack[sp++];
+    rtnvalue = stack[sp++];
     }else
         rtnvalue = 0;
 }
@@ -62,6 +62,15 @@ static ex_condition execWhile(const whilenode *whp)
     do {
         evaluate(whp->expr);
         if (stack[sp++] == 0) break;
+        r = execStatements(whp->body);
+    }while (r == ex_normal);
+    return (r == ex_return) ? ex_return : ex_normal;
+}
+
+static ex_condition execLoop(const loopnode *whp)//追加部
+{
+    ex_condition r = ex_normal;
+    do {
         r = execStatements(whp->body);
     }while (r == ex_normal);
     return (r == ex_return) ? ex_return : ex_normal;
@@ -120,6 +129,10 @@ static ex_condition execStatements(const stnode *stptr)
                 r = execWhile((const whilenode *)stp);
                 if (r != ex_normal) return r;
                 break;
+            case node_loop:
+                r = execLoop((const loopnode *)stp);
+                if (r != ex_normal) return r;
+                break;
             case node_for:
                 r = execFor((const fornode *)stp);
                 if (r != ex_normal) return r;
@@ -133,7 +146,7 @@ static ex_condition execStatements(const stnode *stptr)
     return ex_normal;
 }
 
-void subroutine(int index)
+void subroutine(int index)//関数や手続きの呼び出し、この時点で実引数はスタックに積まれている。
 {
     funcinfo *finf = functionsTable[index];
     int localbase_save = localbase;
@@ -142,9 +155,9 @@ void subroutine(int index)
     if (sp - locals < STACK_LOW)
         abortMessage("stack overflow");
     while (locals--)
-        stack[--sp] = 0;    // local vars
+        stack[--sp] = 0;    // local varsローカル変数の数
 
-    (void)execStatements(finf->body);
+    (void)execStatements(finf->body);//codeブロックで作った構文木を実行
 
     if (finf->rtntype) { // function
         sp = localbase;
