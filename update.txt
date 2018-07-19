@@ -1,0 +1,51 @@
+0.1.3 と 0.1.4 の違い（コメントを除く）
+
+
+(1) abort.c  16行目に追加
+    13	    if (stdtxin) {
+    14	        printTextBuffer(stderr, stdtxin);
+    15	        freeTextBuffer(stdtxin);
+    16	        stdtxin = NULL;
+    17	    }
+
+
+(2) execute.c
+
+------ 新版 0.1.4 -----
+static void execReturn(const assignnode *asp)
+{
+    if (asp->global) {
+        evaluate(asp->expr);
+        rtnvalue = stack[sp++];
+    }else
+        rtnvalue = 0;
+}
+
+------ 旧版 0.1.3 -----
+static void execReturn(const assignnode *asp)
+{
+    if (asp->global)
+        evaluate(asp->expr);
+    rtnvalue = stack[sp++];
+}
+
+
+(3) main.c
+1c1
+< #define  VERSION    "0.1.3"
+---
+> #define  VERSION    "0.1.4"
+
+54行目に追加
+    52	    int mainindex = parseProgram();
+    53	    freeTextBuffer(stdtxin);
+    54	    stdtxin = NULL;
+
+
+(4) printitem.c
+1c1
+34c34
+<             str = shorten(literalString(p->offset), 20);
+---
+>             str = shorten(literalString((int)p->a.value), 20);
+
