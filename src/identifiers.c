@@ -5,12 +5,12 @@
 
 #define GLOBAL_ID_MAX  512
 
-static const char *reserved[] = {
+static const char *reserved[] = {//追加部
     "and", "break", "call", "declare", "do",
     "else", "elsif", "end", "for", "func",
     "if", "input", "not", "or", "print",
     "println", "proc", "return", "step", "then",
-    "to", "var", "while",
+    "to", "var","loop","while",
     NULL
 };
 // Note that the order of strings must be the same as the order of
@@ -31,7 +31,7 @@ const char *reservedWord(int sym) {
 void idtablesInitialize(void)
 {
     int cap = 2 * sizeof(reserved) / sizeof(const char *);
-    resv_table = idtableCreate(cap, false);
+    resv_table = idtableCreate(cap, false);//予約語の時
     const char *w;
     int sym = reserved_word_0;
     for (int x = 0; (w = reserved[x]) != NULL; x++) {

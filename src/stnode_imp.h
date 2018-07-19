@@ -21,16 +21,23 @@ struct ifclause {
     struct _stnode *body;
 };
 
+//stnodeだけでは情報が足りない、stnodeはスーパクラス的なもの
 typedef struct _ifnode {        // if-statement
-    struct _stnode _padding;    // caution!
+    struct _stnode _padding;    // caution!stnodeと同じものがここに入っていることが重要(nextとkindとcountがここに入っていると考える)キャストするとstnodeとして見れる
     struct ifclause  clause[1];
 } ifnode;
 
-typedef struct _whilenode {     // while-statement
+typedef struct _whilenode {     // while-statement、getitemをしてwhileが出てきたら
     struct _stnode _padding;    // caution!
     expnode        *expr;
     struct _stnode *body;
 } whilenode;
+
+typedef struct _loopnode {//追加部
+    struct _stnode _padding;    // caution!
+    expnode        *expr;
+    struct _stnode *body;
+} loopnode;
 
 typedef struct _fornode {
     struct _stnode _padding;    // caution!

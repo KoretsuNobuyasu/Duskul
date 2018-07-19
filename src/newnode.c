@@ -4,7 +4,7 @@
 #include "stnode_imp.h"
 #include "abort.h"
 
-/** Allocate a node for assign, return, while, for, or break. */
+/** Allocate a node for assign, return, while, for, or break. 追加部*/
 stnode *newNode(nodetype kind)
 {
     size_t total = sizeof(stnode);
@@ -16,6 +16,8 @@ stnode *newNode(nodetype kind)
             total = sizeof(whilenode); break;
         case node_for:
             total = sizeof(fornode); break;
+        case node_loop:
+            total = sizeof(loopnode); break;
         case node_break:
             break;
         default: assert(false); break;
