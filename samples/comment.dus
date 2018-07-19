@@ -1,0 +1,12 @@
+declare proc commentTest()  //コメントがしっかり実装されているかを確かめる手続きだよ〜
+
+proc main()
+    //println("こめんとだよ〜")
+    println("こめんとじゃないよ〜")
+end
+
+proc commentTest()
+    //println("こめんとだよ〜、手続きだよ〜")
+    println("こめんとじゃないよ〜、手続きだよ〜")
+    
+end

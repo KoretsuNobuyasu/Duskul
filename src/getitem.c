@@ -65,6 +65,24 @@ item fgetItem(TIN *tip, bool currentOnly) {
     chattr_t attr;
     do {
         ch = nextch(tip);
+        int lines = tip->lines;
+        if(ch == '/'){
+            int nch = nextch(tip);
+            if(nch == '/'){
+                do{
+                    ch = nextch(tip);
+                }while(lines == tip->lines);
+                
+                if (ch == '/') {
+                    undoch(ch, tip);
+                    ch = ' ';
+                }
+                
+            }
+            else{
+                undoch(ch, tip);
+            }
+        }
         attr = chAttribute(ch);
     }while (attr == ca_blank);
     switch (attr) {
